@@ -255,11 +255,6 @@
             }
             saveActivityState(true);
             setLockState(true, buildLink(data), data);
-            
-            exportData();
-            setTimeout(() => {
-                alert("Atividade concluída. O ficheiro com a definição da atividade foi descarregado em formato JSON. Por favor, coloque esse ficheiro na pasta 'Actividades desenvolvidas'.");
-            }, 300);
         });
 
         document.getElementById('editDataBtn').addEventListener('click', () => {
@@ -273,11 +268,6 @@
                  // Verificar se há dados na tabela
                  const submissions = JSON.parse(localStorage.getItem('eduAuthSubmissions')) || [];
                  if (submissions.length > 0) {
-                     if (confirm("Deseja exportar e guardar os dados da atividade atual (PDF + Ficheiro de Recuperação) antes de a limpar?")) {
-                         exportData();
-                         printWithCustomTitle();
-                         alert("Atenção: Os ficheiros foram gerados. Clique OK para concluir a limpeza dos dados da atividade anterior.");
-                     }
                      // Apagar as autorizações antigas para iniciar a nova atividade
                      localStorage.removeItem('eduAuthSubmissions');
                      loadSubmissions();
@@ -598,11 +588,19 @@
 
             const originalTitle = document.title;
             document.title = docName;
-            window.print();
+            
+            // Prevent immediate title reversion which breaks PDF naming on async print dialogues (e.g. Chrome)
+            const restoreTitle = () => {
+                document.title = originalTitle;
+                window.removeEventListener('afterprint', restoreTitle);
+            };
+            window.addEventListener('afterprint', restoreTitle);
             
             setTimeout(() => {
-                document.title = originalTitle;
-            }, 1000);
+                window.print();
+                // Assured fallback if afterprint event is somehow missed
+                setTimeout(restoreTitle, 30000);
+            }, 500);
         }
 
         document.getElementById('printPdfBtn').addEventListener('click', () => {
