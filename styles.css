@@ -72,9 +72,9 @@ body::before {
 
 .card {
     width: 100%;
-    max-width: 650px;
+    max-width: 500px;
     border-radius: 24px;
-    padding: 3rem;
+    padding: 2.5rem;
     position: relative;
     overflow: hidden;
 }

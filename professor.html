@@ -491,7 +491,17 @@
 
         document.getElementById('whatsappBtn').addEventListener('click', () => {
             const finalUrl = document.getElementById('finalUrl').value;
-            const text = `Olá! Clique neste link para enviar a autorização da nossa próxima atividade escolar: ${finalUrl}`;
+            const data = getFormData();
+            let descAtividade = "nossa próxima atividade escolar";
+            const nome = data.atividade || "";
+            let infoData = "";
+            if (data.inicio) {
+                const d = data.inicio.split('T')[0].split('-').reverse().join('/');
+                infoData = ` no dia ${d}`;
+            }
+            if (nome) descAtividade = `atividade "${nome}"${infoData}`;
+            
+            const text = `Olá! Clique neste link para enviar a autorização da ${descAtividade}: ${finalUrl}`;
             window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank');
         });
 
