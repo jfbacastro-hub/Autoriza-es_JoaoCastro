@@ -6,6 +6,7 @@
     <title>Painel do Professor - EduConnect</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
 <body>
     <div class="page-wrapper">
@@ -376,11 +377,26 @@
             }
 
             const currentSubs = JSON.parse(localStorage.getItem('eduAuthSubmissions')) || [];
-            if (currentSubs.length > 0) {
-                if (!confirm('Já existem dados nesta sessão. Deseja substituí-los pelos que está a recuperar?')) {
-                    return;
+            let mergedSubs = [...bundle.submissions];
+            let newUpdates = [];
+
+            currentSubs.forEach(s => {
+                const isSameActivity = (s.atividade === bundle.activity.atividade) || (!s.atividade && !bundle.activity.atividade);
+                if (isSameActivity) {
+                    const isExactMatch = bundle.submissions.some(b => 
+                        b.student === s.student && 
+                        b.atividade === s.atividade &&
+                        b.guardian === s.guardian
+                    );
+                    if (!isExactMatch) {
+                        mergedSubs.push(s);
+                        newUpdates.push(s);
+                    }
+                } else {
+                    const exists = mergedSubs.some(b => b.id === s.id);
+                    if (!exists) mergedSubs.push(s);
                 }
-            }
+            });
 
             const data = bundle.activity;
             if(document.getElementById('professorInput')) document.getElementById('professorInput').value = data.professor || '';
@@ -393,18 +409,29 @@
 
             data.locked = true;
             localStorage.setItem('eduAuthCurrentActivity', JSON.stringify(data));
-            localStorage.setItem('eduAuthSubmissions', JSON.stringify(bundle.submissions));
+            localStorage.setItem('eduAuthSubmissions', JSON.stringify(mergedSubs));
 
             setLockState(true, buildLink(data), data);
             loadSubmissions();
 
-            alert(`✅ Atividade "${data.atividade}" recuperada com sucesso! ${bundle.submissions.length} autorização(s) carregada(s).`);
-            
             let history = JSON.parse(localStorage.getItem('eduAuthActivityHistory')) || [];
             history = history.filter(h => h.activity.atividade !== data.atividade);
-            history.unshift(bundle);
-            if (history.length > 15) history = history.slice(0, 15);
-            localStorage.setItem('eduAuthActivityHistory', JSON.stringify(history));
+
+            if (newUpdates.length > 0) {
+                alert(`✅ Atividade "${data.atividade}" recuperada!\nForam encontradas e adicionadas ${newUpdates.length} novas atualizações.\nO ficheiro será atualizado e guardado automaticamente.`);
+                
+                const updatedBundle = { version: bundle.version || 1, activity: data, submissions: mergedSubs };
+                history.unshift(updatedBundle);
+                if (history.length > 15) history = history.slice(0, 15);
+                localStorage.setItem('eduAuthActivityHistory', JSON.stringify(history));
+                
+                setTimeout(() => exportData(), 500);
+            } else {
+                alert(`✅ Atividade "${data.atividade}" recuperada com sucesso! ${mergedSubs.length} autorização(s) carregada(s).`);
+                history.unshift(bundle);
+                if (history.length > 15) history = history.slice(0, 15);
+                localStorage.setItem('eduAuthActivityHistory', JSON.stringify(history));
+            }
         }
 
         // Initialize from local storage or set defaults on boot
@@ -592,29 +619,36 @@
             document.getElementById('printActivityTitle').textContent = printTitle;
             document.getElementById('printActivityMeta').textContent = printMeta;
 
-            const originalTitle = document.title;
-            document.title = docName;
-            
-            // Prevent immediate title reversion which breaks PDF naming on async print dialogues (e.g. Chrome)
-            const restoreTitle = () => {
-                document.title = originalTitle;
-                window.removeEventListener('afterprint', restoreTitle);
-            };
             const attemptCopyAndPrint = async () => {
-                const alertMsg = `Atenção: Os navegadores bloqueiam propostas de nomes automaticamente quando usamos ficheiros locais (file://).\n\nPara facilitar, o nome sugerido:\n\n"${docName}"\n\njá foi automaticamente COPIADO! Quando a janela de gravação abrir, escolha 'Guardar como PDF' e faça Colar (Ctrl+V) na área do nome do ficheiro.`;
+                document.body.classList.add('printing-pdf');
                 
-                try {
-                    await navigator.clipboard.writeText(docName);
-                    alert(alertMsg);
-                } catch (err) {
-                    console.log("Não foi possível aceder ao clipboard automaticamente.");
-                }
+                // Opções para o gerador de PDF
+                const opt = {
+                    margin:       15,
+                    filename:     `${docName}.pdf`,
+                    image:        { type: 'jpeg', quality: 0.98 },
+                    html2canvas:  { scale: 2, useCORS: true },
+                    jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                };
 
-                window.addEventListener('afterprint', restoreTitle);
-                window.print();
-                
-                // Assured fallback if afterprint event is somehow missed
-                setTimeout(restoreTitle, 30000);
+                // Remove o loader do botão para não travar muito
+                const printBtn = document.getElementById('printPdfBtn');
+                const origText = printBtn.innerHTML;
+                printBtn.innerHTML = 'A gerar PDF...';
+                printBtn.disabled = true;
+
+                try {
+                    // Seleciona a raiz da página (todo o conteúdo que sobra com .printing-pdf ativo)
+                    const element = document.body;
+                    await html2pdf().set(opt).from(element).save();
+                } catch (err) {
+                    console.error("Erro a gerar o PDF:", err);
+                    alert("Ocorreu um erro a gerar o ficheiro PDF. Tente novamente.");
+                } finally {
+                    document.body.classList.remove('printing-pdf');
+                    printBtn.innerHTML = origText;
+                    printBtn.disabled = false;
+                }
             };
 
             attemptCopyAndPrint();
