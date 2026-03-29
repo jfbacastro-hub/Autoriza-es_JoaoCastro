@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal de Autorizações Escolares</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="page-wrapper">
+        <header class="header">
+            <div class="logo">
+                <span>Portal da ESMA</span>
+            </div>
+            <a href="#" id="adminAccessBtn" class="secondary-btn" style="text-decoration: none; padding: 0.5rem 1rem; font-size: 0.85rem; background: rgba(255,255,255,0.8); border: 1px solid rgba(0,0,0,0.1); border-radius: 8px; color: var(--text-main); display: flex; align-items: center; gap: 0.4rem; cursor: pointer; transition: all 0.2s ease; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                Gestão (Professor)
+            </a>
+        </header>
+
+        <main class="main-content">
+            <div class="card glass-effect">
+                <div class="card-header">
+                    <img src="logotipo_ESMA.webp" alt="Logotipo ESMA"
+                        style="height: 75px; margin-bottom: 1.5rem; object-fit: contain;">
+                    <br>
+                    <span class="badge">Atividade Extracurricular</span>
+                    <h1>Autorização de Participação</h1>
+                    <p class="subtitle">Complete o formulário abaixo para autorizar a saída do seu educando e a sua
+                        respetiva participação na atividade.</p>
+                </div>
+
+                <div class="activity-details">
+                    <div class="detail-item">
+                        <div class="icon-wrapper">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
+                        </div>
+                        <div>
+                            <strong>Professor Responsável</strong>
+                            <span id="display-prof">Link do Professor necessário...</span>
+                        </div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="icon-wrapper">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                            </svg>
+                        </div>
+                        <div>
+                            <strong>Nome da Atividade</strong>
+                            <span id="display-atividade">-</span>
+                        </div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="icon-wrapper">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                <circle cx="12" cy="10" r="3"></circle>
+                            </svg>
+                        </div>
+                        <div>
+                            <strong>Destino / Local</strong>
+                            <span id="display-local">-</span>
+                        </div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="icon-wrapper">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                <line x1="16" y1="2" x2="16" y2="6"></line>
+                                <line x1="8" y1="2" x2="8" y2="6"></line>
+                                <line x1="3" y1="10" x2="21" y2="10"></line>
+                            </svg>
+                        </div>
+                        <div>
+                            <strong>Início da Atividade</strong>
+                            <span id="display-inicio">-</span>
+                        </div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="icon-wrapper">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12 6 12 12 16 14"></polyline>
+                            </svg>
+                        </div>
+                        <div>
+                            <strong>Fim da Atividade</strong>
+                            <span id="display-fim">-</span>
+                        </div>
+                    </div>
+                    <div class="detail-item class-hidden" id="box-notas"
+                        style="align-items: flex-start; background: #e0e7ff; margin-top: 0.5rem; padding: 1rem; border-radius: 12px; border: 1px dashed #c7d2fe;">
+                        <div class="icon-wrapper"
+                            style="background: transparent; box-shadow: none; width: auto; height: auto; margin-right: 0.2rem;">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--primary)"
+                                stroke-width="2">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                                <line x1="16" y1="13" x2="8" y2="13"></line>
+                                <line x1="16" y1="17" x2="8" y2="17"></line>
+                                <polyline points="10 9 9 9 8 9"></polyline>
+                            </svg>
+                        </div>
+                        <div style="flex:1;">
+                            <strong style="color: var(--primary);">Notas / Informações Úteis</strong>
+                            <span id="display-notas"
+                                style="font-weight: 400; display: block; margin-top: 0.25rem; white-space: pre-wrap;">-</span>
+                        </div>
+                    </div>
+                </div>
+
+                <form id="authForm" class="auth-form">
+                    <div class="form-group document-section">
+                        <h3><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg> Dados do Aluno</h3>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="studentName">Nome completo do Aluno</label>
+                        <input type="text" id="studentName" placeholder="Ex: João Pedro Santos" required>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="studentClass">Ano e Turma</label>
+                            <input type="text" id="studentClass" placeholder="Ex: 8º A" required>
+                        </div>
+                    </div>
+
+                    <div class="divider"></div>
+
+                    <div class="form-group document-section">
+                        <h3><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                            </svg> Encarregado de Educação</h3>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="guardianName">Nome do Encarregado de Educação</label>
+                        <input type="text" id="guardianName" placeholder="O seu nome completo" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="guardianContact">Contacto Móvel</label>
+                        <input type="tel" id="guardianContact" placeholder="Ex: 912 345 678" pattern="[0-9 ]+"
+                            minlength="9" title="Insira o seu contacto telefónico" required>
+                    </div>
+
+                    <div class="terms-card">
+                        <div class="form-group checkbox-group">
+                            <input type="checkbox" id="consent1" required>
+                            <label for="consent1">
+                                Declaro que tomo conhecimento das condições da atividade e <strong>autorizo</strong> a
+                                participação do meu educando(a). Compreendo que a atividade se realizará sob a coordenação do(a) docente <strong
+                                    id="consent-prof">responsável</strong>.
+                            </label>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="submit-btn" id="submitBtn">
+                        <span class="btn-text">Assinar Digitalmente e Autorizar</span>
+                        <div class="spinner class-hidden"></div>
+                    </button>
+                </form>
+            </div>
+
+            <div class="modal hidden" id="successModal">
+                <div class="modal-content glass-effect" style="max-width: 420px;">
+                    <div style="font-size: 3rem; margin-bottom: 0.5rem;">✅</div>
+                    <h2>Autorização Submetida!</h2>
+                    <p>A participação do seu educando foi registada e autorizada.</p>
+                    
+                    <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 1rem; margin: 1rem 0;">
+                        <p style="font-size: 0.9rem; color: #166534; margin: 0 0 0.75rem 0;">
+                            <strong>📩 Passo importante:</strong> Envie a confirmação ao professor para que ele possa registar a sua autorização.
+                        </p>
+                        <a id="sendToTeacherBtn" href="#" target="_blank" rel="noopener noreferrer"
+                            style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; width: 100%; padding: 0.85rem 1rem; background: #25D366; color: white; border: none; border-radius: 10px; font-size: 1rem; font-weight: 600; text-decoration: none; cursor: pointer; box-shadow: 0 2px 8px rgba(37,211,102,0.3);">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                            Enviar confirmação ao Professor
+                        </a>
+                    </div>
+
+                    <button class="secondary-btn" id="closeModal" style="width: 100%; margin-top: 0.5rem;">Concluir e Fechar</button>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>
