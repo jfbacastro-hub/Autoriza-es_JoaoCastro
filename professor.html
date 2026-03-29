@@ -194,7 +194,6 @@
             const url = new URL(baseUrl);
             url.searchParams.set('atividade', data.atividade.trim());
             if(data.professor.trim()) url.searchParams.set('professor', data.professor.trim());
-            if(data.telefone && data.telefone.trim()) url.searchParams.set('telefone', data.telefone.trim());
             if(data.local.trim()) url.searchParams.set('local', data.local.trim());
             if(data.inicio) url.searchParams.set('inicio', data.inicio);
             if(data.fim) url.searchParams.set('fim', data.fim);
