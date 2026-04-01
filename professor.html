@@ -99,7 +99,7 @@
                             <button type="button" id="copyBtn" class="secondary-btn" style="width: auto; padding: 0.5rem 1rem;">📝 Copiar</button>
                         </div>
                         <div style="display:flex; gap:0.5rem; margin-top: 0.75rem;">
-                            <button type="button" id="whatsappBtn" class="secondary-btn" style="flex:1; background:#25D366; color:white; border:none; padding: 0.75rem;">📱 WhatsApp</button>
+                            <a id="whatsappBtn" target="_blank" class="secondary-btn" style="flex:1; background:#25D366; color:white; border:none; padding: 0.75rem; text-decoration: none; text-align: center; cursor: pointer; display: inline-block;">📱 WhatsApp</a>
                         </div>
                     </div>
                 </form>
@@ -516,21 +516,6 @@
             }, 2000);
         });
 
-        document.getElementById('whatsappBtn').addEventListener('click', () => {
-            const finalUrl = document.getElementById('finalUrl').value;
-            const data = getFormData();
-            let descAtividade = "nossa próxima atividade escolar";
-            const nome = data.atividade || "";
-            let infoData = "";
-            if (data.inicio) {
-                const d = data.inicio.split('T')[0].split('-').reverse().join('/');
-                infoData = ` no dia ${d}`;
-            }
-            if (nome) descAtividade = `atividade "${nome}"${infoData}`;
-            
-            const text = `Olá! Clique neste link para enviar a autorização da ${descAtividade}: ${finalUrl}`;
-            window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank');
-        });
 
         // Formata nomes: Primeiro I. I. Último
         function formatName(fullname) {
@@ -551,7 +536,7 @@
         }
 
         // Load Submissions Table
-        function loadSubmissions() {
+        function loadSubmissions(sortByAlphabet = false) {
             const tbody = document.getElementById('submissionsTableBody');
             const submissions = JSON.parse(localStorage.getItem('eduAuthSubmissions')) || [];
             
@@ -561,8 +546,15 @@
             }
 
             tbody.innerHTML = '';
-            // Ordem decrescente
-            [...submissions].reverse().forEach(sub => {
+            
+            let displaySubs = [...submissions];
+            if (sortByAlphabet) {
+                displaySubs.sort((a, b) => a.student.localeCompare(b.student));
+            } else {
+                displaySubs.reverse(); // Ordem decrescente
+            }
+
+            displaySubs.forEach(sub => {
                 tbody.innerHTML += `
                     <tr>
                         <td>${sub.date}</td>
@@ -622,6 +614,9 @@
             const attemptCopyAndPrint = async () => {
                 document.body.classList.add('printing-pdf');
                 
+                // Organizar alunos por ordem alfabética no PDF
+                loadSubmissions(true);
+                
                 // Opções para o gerador de PDF
                 const opt = {
                     margin:       15,
@@ -648,6 +643,9 @@
                     document.body.classList.remove('printing-pdf');
                     printBtn.innerHTML = origText;
                     printBtn.disabled = false;
+                    
+                    // Restaurar ordem decrescente original
+                    loadSubmissions(false);
                 }
             };
 
