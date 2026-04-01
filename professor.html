@@ -199,8 +199,7 @@
     <div id="recoveryModal" class="modal hidden">
         <div class="modal-content" style="max-width: 500px;">
             <h2 style="color: var(--primary);">Recuperar Atividade</h2>
-            <p>Selecione uma atividade anterior para carregar os seus dados, ou escolha um ficheiro já guardado no seu
-                computador.</p>
+            <p>Selecione uma atividade anterior abaixo, ou escolha um ficheiro previamente guardado na sua pasta <strong>"TabelasActividadesGuardadas"</strong>.</p>
 
             <div id="activitiesList" class="activities-list">
                 <!-- Preenchido pelo JS -->
@@ -209,7 +208,7 @@
             <div style="display: flex; gap: 0.5rem; flex-direction: column;">
                 <button type="button" class="secondary-btn" id="openFilePickerBtn"
                     style="background: var(--primary); color: white;">
-                    📂 Procurar Ficheiro Local...
+                    📂 Procurar na pasta "TabelasActividadesGuardadas"...
                 </button>
                 <button type="button" class="secondary-btn" id="closeRecoveryBtn"
                     style="background: #f1f5f9; color: #475569;">
@@ -364,6 +363,8 @@
                 prefixoData = activity.inicio.split('T')[0].split('-').join('') + ' ';
             }
             const filename = `${prefixoData}${nome} - Autorizacoes.json`;
+
+            alert(`O ficheiro de dados da atividade será transferido.\n\nPor favor, guarde-o na pasta "TabelasActividadesGuardadas" para facilitar a organização e recuperação futura.`);
 
             const blob = new Blob([JSON.stringify(bundle, null, 2)], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
@@ -719,6 +720,9 @@
                 const origText = printBtn.innerHTML;
                 printBtn.innerHTML = 'A gerar PDF...';
                 printBtn.disabled = true;
+
+                // Alerta sobre a pasta de destino
+                alert(`O documento PDF será gerado em breve.\n\nPor favor, guarde-o na pasta "TabelasActividadesGuardadas" para o seu arquivo.`);
 
                 try {
                     // Seleciona a raiz da página (todo o conteúdo que sobra com .printing-pdf ativo)
